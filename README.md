@@ -13,7 +13,6 @@ The repository represents the foundation of an ERC-20 Token Launch package, whic
 
 
 ## PROJECT GOALS 
----------------------------------------
 
 The purpose of this project is to demonstrate how a modern ERC-20 token should be designed for real-world use.
 
@@ -30,7 +29,7 @@ These patterns are widely used in production Web3 applications.
 
 
 ## SMART CONTRACT FEATURES
----------------------------------------
+
 FIXED MAXIMUM SUPPLY
 The contract enforces a hard cap on the total supply using OpenZeppelin's ERC20Capped.
 This prevents tokens from being minted beyond the maximum supply.
@@ -71,7 +70,6 @@ TokenUnpaused
 Events make it easier for applications, dashboards, and explorers to monitor contract activity.
 
 ## TECHNOLOGY STACK
----------------------------------------
 
 This project was built using the following tools:
 
@@ -84,7 +82,7 @@ Alchemy – Ethereum RPC provider
 Sepolia Test Network – Deployment environment
 
 ## PROJECT STRUCTURE
----------------------------------------
+
 contracts/
     SampleToken.sol
 
@@ -107,7 +105,6 @@ test
 Contains automated tests verifying all major contract behaviors.
 
 ## SMART CONTRACT ARCHITECTURE
----------------------------------------
 
 The SampleToken contract extends several OpenZeppelin modules:
 
@@ -120,7 +117,6 @@ AccessControl
 This modular architecture provides strong security and reusable functionality while keeping the contract easy to audit.
 
 ## INSTALLATION
----------------------------------------
 
 CLONE THE REPOSITORY:
 
@@ -151,7 +147,6 @@ Supply cap enforcement
 Role-based access control
 
 ## ENVIRONMENT SETUP
----------------------------------------
 
 Create a .env file in the root directory.
 
@@ -164,7 +159,6 @@ Connect to the Sepolia network
 Sign transactions using the deployer's wallet
 
 ## DEPLOYMENT
----------------------------------------
 
 To deploy the contract to Sepolia:
 
@@ -179,7 +173,6 @@ Waits for confirmation
 Outputs the deployed contract address
 
 ## EXAMPLE TOKEN CONFIGURATION
----------------------------------------
 
 Example parameters used in deployment:
 
@@ -190,7 +183,6 @@ Initial Supply: 100,000 tokens
 
 
 ## SECURITY PRACTICES
----------------------------------------
 
 The contract uses well-established patterns from OpenZeppelin including:
 
@@ -202,7 +194,6 @@ Audited contract libraries
 These are common practices used in production smart contracts.
 
 ## EXAMPLE USE CASES
----------------------------------------
 
 This ERC-20 architecture can support many types of projects:
 
@@ -213,7 +204,6 @@ Loyalty rewards
 DeFi protocol tokens
 
 ## FUTURE ENHANCEMENTS
----------------------------------------
 
 This project serves as the base layer for a larger Web3 infrastructure package.
 
@@ -227,7 +217,6 @@ Treasury management
 Upgradeable proxy contracts
 
 ## AUTHOR
----------------------------------------
 
 Kyle Tredway
 Smart Contract Developer/Token Launch Specialist
