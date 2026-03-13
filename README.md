@@ -131,9 +131,13 @@ Contains automated tests verifying all major contract behaviors.
 The SampleToken contract extends several OpenZeppelin modules:
 
 ERC20
+
 ERC20Burnable
+
 ERC20Capped
+
 ERC20Pausable
+
 AccessControl
 
 This modular architecture provides strong security and reusable functionality while keeping the contract easy to audit.
@@ -158,8 +162,7 @@ npx hardhat compile
 
 npx hardhat test
 
-### 
-THE TESTS VALIDATE:
+### THE TESTS VALIDATE:
 
 Token initialization
 
@@ -197,9 +200,13 @@ npx hardhat run scripts/deploy.js --network sepolia
 The deployment script performs the following steps:
 
 Retrieves the deployer wallet
+
 Creates the contract factory
+
 Deploys the token with constructor parameters
+
 Waits for confirmation
+
 Outputs the deployed contract address
 
 ## EXAMPLE TOKEN CONFIGURATION
