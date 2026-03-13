@@ -31,40 +31,53 @@ These patterns are widely used in production Web3 applications.
 ## SMART CONTRACT FEATURES
 
 FIXED MAXIMUM SUPPLY
+
 The contract enforces a hard cap on the total supply using OpenZeppelin's ERC20Capped.
 This prevents tokens from being minted beyond the maximum supply.
 
 INITIAL TOKEN MINT
+
 When the contract is deployed, an initial supply of tokens is minted directly to the deployer.
 
 ROLE-BASED PERMISSIONS
+
 Administrative actions are protected using OpenZeppelin’s AccessControl.
 Roles include:
 
-Role	Description
+ROLE DESCRIPTION
+
 DEFAULT_ADMIN_ROLE	Can manage roles
+
 MINTER_ROLE	Allowed to mint tokens
+
 PAUSER_ROLE	Allowed to pause/unpause transfers
 
 MINTING
+
 Authorized accounts with the MINTER_ROLE can mint new tokens up to the cap.
 Every mint emits a TokensMinted event.
 
 BURNING
+
 Any token holder can permanently destroy tokens from their own balance using the burn function.
 Each burn emits a TokensBurned event.
 
 EMERGENCY PAUSE
+
 Authorized accounts with the PAUSER_ROLE can pause all token transfers.
 This is useful if a vulnerability or emergency occurs.
 Transfers resume when the contract is unpaused.
 
 EVENT TRACKING
+
 The contract emits events for important actions:
 
 TokensMinted
+
 TokensBurned
+
 TokenPaused
+
 TokenUnpaused
 
 Events make it easier for applications, dashboards, and explorers to monitor contract activity.
@@ -74,11 +87,17 @@ Events make it easier for applications, dashboards, and explorers to monitor con
 This project was built using the following tools:
 
 Solidity – Smart contract programming language
+
 Hardhat – Ethereum development environment
+
 Ethers.js – Contract interaction library
+
 OpenZeppelin Contracts – Secure smart contract libraries
+
 Mocha & Chai – JavaScript testing framework
+
 Alchemy – Ethereum RPC provider
+
 Sepolia Test Network – Deployment environment
 
 ## PROJECT STRUCTURE
@@ -95,13 +114,16 @@ test/
 hardhat.config.js
 .env
 
-contracts
+CONTRACTS
+
 Contains the ERC-20 smart contract implementation.
 
-scripts
+SCRIPTS
+
 Contains the deployment script used to deploy the token.
 
-test
+TESTS
+
 Contains automated tests verifying all major contract behaviors.
 
 ## SMART CONTRACT ARCHITECTURE
@@ -118,32 +140,39 @@ This modular architecture provides strong security and reusable functionality wh
 
 ## INSTALLATION
 
-CLONE THE REPOSITORY:
+### CLONE THE REPOSITORY:
 
 git clone https://github.com/Ktredway0128/erc20-token-launch
 
 cd erc20-token-launch
 
-INSTALL DEPENDENCIES:
+### INSTALL DEPENDENCIES:
 
 npm install
 
-COMPLE THE CONTRACT:
+### COMPILE THE CONTRACT:
 
 npx hardhat compile
 
-RUN THE TEST SUITE :
+### RUN THE TEST SUITE :
 
 npx hardhat test
 
+### 
 THE TESTS VALIDATE:
 
 Token initialization
+
 Transfers
+
 Mint permissions
+
 Pause / unpause functionality
+
 Token burning
+
 Supply cap enforcement
+
 Role-based access control
 
 ## ENVIRONMENT SETUP
@@ -151,6 +180,7 @@ Role-based access control
 Create a .env file in the root directory.
 
 ALCHEMY_API_URL=YOUR_SEPOLIA_RPC_URL
+
 DEPLOYER_PRIVATE_KEY=YOUR_PRIVATE_KEY
 
 These values allow Hardhat to:
@@ -177,8 +207,11 @@ Outputs the deployed contract address
 Example parameters used in deployment:
 
 Token Name: Sample Token
+
 Token Symbol: STK
+
 Maximum Supply: 1,000,000 tokens
+
 Initial Supply: 100,000 tokens
 
 
@@ -187,8 +220,11 @@ Initial Supply: 100,000 tokens
 The contract uses well-established patterns from OpenZeppelin including:
 
 Supply caps
+
 Role-based permissions
+
 Emergency pause mechanisms
+
 Audited contract libraries
 
 These are common practices used in production smart contracts.
@@ -198,9 +234,13 @@ These are common practices used in production smart contracts.
 This ERC-20 architecture can support many types of projects:
 
 DAO governance tokens
+
 Startup utility tokens
+
 Game economies
+
 Loyalty rewards
+
 DeFi protocol tokens
 
 ## FUTURE ENHANCEMENTS
@@ -210,15 +250,21 @@ This project serves as the base layer for a larger Web3 infrastructure package.
 Possible upgrades include:
 
 Token crowdsale contracts
+
 Investor vesting schedules
+
 Staking rewards
+
 Governance (DAO voting)
+
 Treasury management
+
 Upgradeable proxy contracts
 
 ## AUTHOR
 
 Kyle Tredway
+
 Smart Contract Developer/Token Launch Specialist
 
 License
