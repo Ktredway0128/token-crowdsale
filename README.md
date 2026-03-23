@@ -1,8 +1,12 @@
 # ERC-20 TOKEN VESTING CONTRACT
 
+[![Verified on Etherscan](https://img.shields.io/badge/Etherscan-Verified-brightgreen)](https://sepolia.etherscan.io/address/0x2922ff891f0efc440765ad53fb85482694783781#code)
+
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.19-blue)
 ![Hardhat](https://img.shields.io/badge/Built%20with-Hardhat-yellow)
+
+Built by [Kyle Tredway Development](https://kyle-tredway-portfolio.netlify.app/) — professional Solidity smart contract packages for Web3 companies.
 
 A secure and production-ready ERC-20 token vesting contract built with Solidity, OpenZeppelin, and Hardhat.
 
