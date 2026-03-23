@@ -6,6 +6,9 @@
 
 A secure and production-ready ERC-20 token vesting contract built with Solidity, OpenZeppelin, and Hardhat.
 
+> ⚠️ These contracts have not been professionally audited. A full security audit is strongly recommended before any mainnet deployment.
+
+
 This project demonstrates the full lifecycle of a token vesting system including:
 
 Smart contract development
