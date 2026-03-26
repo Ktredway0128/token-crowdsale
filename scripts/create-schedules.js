@@ -23,22 +23,22 @@ async function main() {
             beneficiary: "BENEFICIARY_ADDRESS_1",
             amount: hre.ethers.utils.parseEther("10000"),
             start: Math.floor(Date.now() / 1000),              // starts now
-            cliffDuration: 180 * 24 * 60 * 60,                 // 6 months in seconds
-            duration: 730 * 24 * 60 * 60                        // 2 years in seconds
+            cliffDuration: (180 * 24 * 60 * 60),                 // 6 months in seconds
+            duration: (730 * 24 * 60 * 60),                        // 2 years in seconds
         },
         {
             beneficiary: "BENEFICIARY_ADDRESS_2",
             amount: hre.ethers.utils.parseEther("5000"),
             start: Math.floor(Date.now() / 1000),              // starts now
-            cliffDuration: 90 * 24 * 60 * 60,                  // 3 months in seconds
-            duration: 365 * 24 * 60 * 60                        // 1 year in seconds
+            cliffDuration: (90 * 24 * 60 * 60),                  // 3 months in seconds
+            duration: (365 * 24 * 60 * 60),                        // 1 year in seconds
         },
         {
             beneficiary: "BENEFICIARY_ADDRESS_3",
             amount: hre.ethers.utils.parseEther("8000"),
             start: Math.floor(Date.now() / 1000),              // starts now
-            cliffDuration: 365 * 24 * 60 * 60,                 // 1 year in seconds
-            duration: 1460 * 24 * 60 * 60                       // 4 years in seconds
+            cliffDuration: (365 * 24 * 60 * 60),                 // 1 year in seconds
+            duration: (1460 * 24 * 60 * 60),                       // 4 years in seconds
         },
     ];
 
