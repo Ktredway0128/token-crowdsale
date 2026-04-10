@@ -1,77 +1,61 @@
-# ERC-20 TOKEN VESTING CONTRACT
-
-[![Verified on Etherscan](https://img.shields.io/badge/Etherscan-Verified-brightgreen)](https://sepolia.etherscan.io/address/0x81F71D5D73383750C9d4BCe65C493A55BA887ecB#code)
+# ERC-20 TOKEN CROWDSALE CONTRACT
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.19-blue)
 ![Hardhat](https://img.shields.io/badge/Built%20with-Hardhat-yellow)
 
-Built by [Kyle Tredway Development](https://kyle-tredway-portfolio.netlify.app/) — professional Solidity smart contract packages for Web3 companies.
+Built by [Tredway Development](https://kyle-tredway-portfolio.netlify.app/) — professional Solidity smart contract packages for Web3 companies.
 
-A secure and production-ready ERC-20 token vesting contract built with Solidity, OpenZeppelin, and Hardhat.
+A secure and production-ready ERC-20 token crowdsale contract built with Solidity, OpenZeppelin, and Hardhat.
 
-> ⚠️ These contracts have not been professionally audited. A full security audit is strongly recommended before any mainnet deployment.
+> ⚠️ This contract has not been professionally audited. A full security audit is strongly recommended before any mainnet deployment.
 
 
-This project demonstrates the full lifecycle of a token vesting system including:
+This project demonstrates the full lifecycle of a token fundraising system including:
 
 Smart contract development
 Automated testing
 Deployment scripting
+Merkle tree whitelist verification
+ETH-based token purchases
+Purchaser vesting with cliff periods
+Soft cap and hard cap enforcement
+Refund distribution on failed raises
 Security best practices
 
-This repository represents the second package in a Web3 infrastructure suite, designed to work alongside the ERC-20 Token Launch contract to provide investor and team token vesting capabilities.
+This repository represents the fifth package in a Web3 infrastructure suite, providing the fundraising layer that powers the token economy built on top of the ERC-20 Token Launch, Token Vesting, Merkle Airdrop, and Token Staking contracts.
 
 
 ## PROJECT GOALS
 
-The purpose of this project is to demonstrate how a modern token vesting contract should be designed for real-world use.
+The purpose of this project is to demonstrate how a modern token crowdsale should be designed for real-world use.
 
-The contract includes common features required by token vesting systems:
+The system includes common features required by token fundraising:
 
-Cliff and linear vesting schedules
-Multiple schedules per beneficiary
-Admin controlled revocation
-Fair beneficiary protection on revocation
+ETH-based token purchases with a configurable rate
+Hard cap to limit total raise amount
+Soft cap to protect investors with automatic refunds on failed raises
+Merkle tree whitelist to control who can participate
+Purchaser vesting with mandatory cliff periods to prevent day-one dumping
 Role-based administrative permissions
+Emergency pause capability
 Event logging for transparency
 
-These patterns are widely used in production Web3 applications.
+These patterns are widely used in production Web3 token launches.
 
 
 ## SMART CONTRACT FEATURES
 
-VESTING SCHEDULES
+### ERC-20 TOKEN
 
-Admins can create individual vesting schedules for any beneficiary.
-Each schedule defines a total amount, start time, cliff period, and vesting duration.
-Every schedule creation emits a VestingScheduleCreated event.
+FIXED MAXIMUM SUPPLY
 
-CLIFF PERIOD
+The contract enforces a hard cap on the total supply using OpenZeppelin's ERC20Capped.
+This prevents tokens from being minted beyond the maximum supply.
 
-Tokens are locked until the cliff period has passed.
-No tokens can be released before the cliff regardless of elapsed time.
+INITIAL TOKEN MINT
 
-LINEAR VESTING
-
-After the cliff, tokens are released linearly over the remaining duration.
-Beneficiaries can claim their available tokens at any time after the cliff.
-
-MULTIPLE SCHEDULES PER BENEFICIARY
-
-A single address can hold multiple independent vesting schedules.
-Each schedule is tracked by a unique ID derived from the holder address and index.
-
-REVOCATION
-
-Admins can revoke a vesting schedule at any time.
-Unvested tokens are returned to the contract upon revocation.
-Tokens that vested before revocation remain claimable by the beneficiary.
-
-The exact vested amount is frozen at the moment of revocation using a
-vestedAtRevocation field stored on the schedule. This prevents the releasable
-amount from continuing to climb after revocation, ensuring beneficiaries can
-only ever claim what was legitimately vested before the schedule was cancelled.
+When the contract is deployed, an initial supply of tokens is minted directly to the deployer.
 
 ROLE-BASED PERMISSIONS
 
@@ -81,27 +65,96 @@ Roles include:
 ROLE                DESCRIPTION
 
 DEFAULT_ADMIN_ROLE  Can manage roles
-ADMIN_ROLE          Can create schedules, revoke, and withdraw
+MINTER_ROLE         Allowed to mint tokens
+PAUSER_ROLE         Allowed to pause/unpause transfers
+
+### TOKEN CROWDSALE
+
+ETH-BASED PURCHASES
+
+Buyers send ETH directly to the contract and receive tokens at a configurable rate.
+No token approval is required from the buyer — a single transaction completes the purchase.
+Every purchase emits a TokensPurchased event.
+
+MERKLE WHITELIST
+
+Eligible addresses are stored off-chain in a Merkle tree.
+Only one Merkle root hash is stored on-chain representing the entire whitelist.
+Buyers submit a Merkle proof to verify eligibility before purchasing.
+The Merkle root can be updated by the admin before the sale starts.
+
+HARD CAP AND SOFT CAP
+
+The hard cap is the maximum amount of ETH the sale will accept.
+Once the hard cap is reached no further purchases are allowed.
+The soft cap is the minimum viable raise amount.
+If the soft cap is not reached by the end of the sale all buyers receive a full ETH refund.
+If the soft cap is reached all raised ETH is transferred to the admin on finalization.
+
+MINIMUM AND MAXIMUM CONTRIBUTIONS
+
+Each purchase must meet a minimum ETH contribution to prevent dust transactions.
+Each wallet has a maximum cumulative contribution limit to ensure fair distribution.
+
+PURCHASER VESTING
+
+Tokens purchased in the crowdsale are locked and vest linearly over a configurable duration.
+A mandatory cliff period is enforced from each buyer's purchase timestamp.
+No tokens are claimable until the cliff has passed regardless of elapsed time.
+After the cliff, tokens release linearly until fully vested.
+The vesting clock starts at each buyer's individual purchase date, staggering unlocks
+and reducing sell pressure at any single point in time.
+
+SALE LIFECYCLE
+
+The admin sets all parameters at deployment including rate, caps, duration, and vesting terms.
+The admin calls startSale to begin the sale period and fund the token pool.
+The contract verifies it holds enough tokens to cover the hard cap before starting.
+After the sale period ends or the hard cap is reached the admin calls finalizeSale.
+Finalization distributes ETH to the admin if the soft cap was reached, or enables
+refunds for all buyers if the soft cap was not reached.
+
+CLAIM TOKENS
+
+After the sale is finalized and the soft cap was reached buyers can claim their vested tokens.
+Tokens become claimable incrementally as the vesting schedule progresses.
+Buyers can claim multiple times as additional tokens vest over time.
+Every claim emits a TokensClaimed event.
+
+CLAIM REFUNDS
+
+If the soft cap was not reached after finalization buyers can claim a full ETH refund.
+Each wallet can only claim its refund once.
+Every refund emits a RefundClaimed event.
+
+RATE AND MERKLE ROOT UPDATES
+
+The admin can update the token rate and Merkle root before the sale starts.
+Both are locked once the sale begins to protect buyers from rule changes mid-sale.
+
+EMERGENCY PAUSE
+
+The admin can pause all purchasing activity at any time.
+Claim and refund functions remain available while paused.
+Purchasing resumes when the contract is unpaused.
+
+TOKEN RECOVERY
+
+Admins can recover accidentally sent tokens using recoverTokens.
+The sale token cannot be recovered by design.
+Every recovery emits a TokensRecovered event.
 
 ADMIN ROLE PROTECTION
 
 The contract prevents the admin from accidentally renouncing the DEFAULT_ADMIN_ROLE.
 This ensures the contract can never be permanently locked without an administrator.
 
-TOKEN WITHDRAWAL
-
-Admins can withdraw any tokens not locked in an active vesting schedule.
-This allows recovery of excess or unallocated tokens.
-
 EVENT TRACKING
 
-The contract emits events for important actions:
+The contract emits events for all important actions:
 
-VestingScheduleCreated
-TokensReleased
-VestingRevoked
-
-Events make it easier for applications, dashboards, and explorers to monitor contract activity.
+SaleStarted, TokensPurchased, TokensClaimed, RefundClaimed
+SaleFinalized, MerkleRootUpdated, RateUpdated, TokensRecovered
 
 
 ## TECHNOLOGY STACK
@@ -118,6 +171,10 @@ OpenZeppelin Contracts – Secure smart contract libraries
 
 Mocha & Chai – JavaScript testing framework
 
+merkletreejs – Merkle tree generation library
+
+keccak256 – Hashing library for Merkle leaves
+
 Alchemy – Ethereum RPC provider
 
 Sepolia Test Network – Deployment environment
@@ -126,55 +183,78 @@ Sepolia Test Network – Deployment environment
 ## PROJECT STRUCTURE
 
 contracts/
-    TokenVesting.sol
+    SampleToken.sol
+    TokenCrowdsale.sol
 
 scripts/
-    deploy-token.js
-    deploy-vesting.js
+    deploy-crowdsale.js
+    generate-merkle.js
 
 test/
-    TokenVesting.test.js
+    SampleToken.test.js
+    TokenCrowdsale.test.js
 
 hardhat.config.js
 .env
 
 CONTRACTS
 
-Contains the vesting smart contract implementation.
+Contains both smart contract implementations.
 
 SCRIPTS
 
-Contains deployment scripts for both the token and vesting contracts.
+Contains the deployment script and the Merkle tree generation script.
 
 TESTS
 
-Contains automated tests verifying all major contract behaviors.
+Contains 141 automated tests verifying all major contract behaviors across both contracts.
 
 
 ## SMART CONTRACT ARCHITECTURE
 
-The TokenVesting contract extends the following OpenZeppelin modules:
+The SampleToken contract extends the following OpenZeppelin modules:
 
-AccessControl
-ReentrancyGuard
-SafeERC20
+ERC20, ERC20Burnable, ERC20Capped, ERC20Pausable, AccessControl
 
-This modular architecture provides strong security and reusable functionality while keeping the contract easy to audit.
+The TokenCrowdsale contract extends the following OpenZeppelin modules:
+
+ReentrancyGuard, AccessControl, Pausable, SafeERC20, IERC20, MerkleProof
+
+This modular architecture provides strong security and reusable functionality while keeping the contracts easy to audit.
+
+Key state variables:
+
+rate               – Tokens distributed per ETH
+hardCap            – Maximum ETH the sale will accept
+softCap            – Minimum ETH required for a successful raise
+minContribution    – Minimum ETH per purchase
+maxContribution    – Maximum cumulative ETH per wallet
+saleDuration       – Length of the sale period in seconds
+vestingDuration    – How long purchased tokens vest
+cliffDuration      – Cliff period before any tokens are claimable
+merkleRoot         – Merkle root representing the whitelist
+totalRaised        – Total ETH raised during the sale
+totalTokensSold    – Total tokens sold during the sale
+contributions      – ETH contributed per wallet
+tokensPurchased    – Tokens bought per wallet
+tokensClaimed      – Tokens claimed so far per wallet
+purchaseTimestamp  – When each wallet made their first purchase
+refundClaimed      – Whether a wallet has claimed their refund
 
 
 ## INSTALLATION
 
 ### CLONE THE REPOSITORY:
 
-git clone https://github.com/Ktredway0128/erc20-token-vesting
+git clone https://github.com/Ktredway0128/erc20-token-crowdsale
 
-cd erc20-token-vesting
+cd erc20-token-crowdsale
 
 ### INSTALL DEPENDENCIES:
 
 npm install
 
-### COMPILE THE CONTRACT:
+### COMPILE THE CONTRACTS:
 
 npx hardhat compile
 
@@ -184,15 +264,16 @@ npx hardhat test
 
 ### THE TESTS VALIDATE:
 
-Vesting schedule creation
-Cliff enforcement
-Linear token release
-Full duration release
-Admin revocation
-Beneficiary protection after revocation
-Token withdrawal
-Edge cases and access control
-renounceRole protection
+Token initialization, transfers, minting, burning, pausing, and access control
+Sale deployment and constructor validation
+Sale start, purchase flow, whitelist verification, cap enforcement
+Vesting math, cliff enforcement, partial and full claims
+Soft cap failure path, refund eligibility, and refund distribution
+Finalization for both successful and failed raises
+Pause and unpause behavior
+Admin role protection and access control
+Token recovery functionality
+Edge cases including boundary contributions and wrong proofs
 
 
 ## ENVIRONMENT SETUP
@@ -213,45 +294,110 @@ Sign transactions using the deployer's wallet
 
 ## DEPLOYMENT
 
-This contract requires the ERC-20 token to be deployed first.
-The token address is passed into the vesting contract constructor.
+### STEP 1 - Build your whitelist and generate the Merkle tree:
 
-### STEP 1 - Deploy the token:
+Add your whitelisted wallet addresses to scripts/generate-merkle.js then run:
+
+node scripts/generate-merkle.js
+
+This outputs the Merkle root and writes proofs.json to your frontend src folder.
+
+### STEP 2 - Copy the Merkle root into deploy-crowdsale.js and set your sale parameters:
+
+rate, hardCap, softCap, minContribution, maxContribution
+saleDuration, vestingDuration, cliffDuration
+
+### STEP 3 - Deploy the token:
 
 npx hardhat run scripts/deploy-token.js --network sepolia
 
-### STEP 2 - Copy the token address from the console output and paste it into deploy-vesting.js
+### STEP 4 - Copy the token address into deploy-crowdsale.js then deploy:
 
-### STEP 3 - Deploy the vesting contract:
+npx hardhat run scripts/deploy-crowdsale.js --network sepolia
 
-npx hardhat run scripts/deploy-vesting.js --network sepolia
+### STEP 5 - Fund the crowdsale contract with enough tokens to cover the hard cap:
 
-The deployment script performs the following steps:
+The deploy script handles this automatically using the configured hard cap and rate.
 
-Retrieves the deployer wallet
-Creates the contract factory
-Deploys the vesting contract with the token address
-Waits for confirmation
-Outputs the deployed contract address
+### STEP 6 - Start the sale from the admin dashboard:
+
+Call startSale from the admin panel once you are ready to open purchases.
+
+The deployment scripts perform the following steps:
+
+Retrieve the deployer wallet
+Create the contract factory
+Deploy each contract with the required parameters
+Wait for confirmation
+Output the deployed contract address
 
 ### SEPOLIA TESTNET DEPLOYMENT
 
 | Contract | Address | Etherscan |
 |----------|---------|-----------|
 | SampleToken | `0x036150039c33b1645080a9c913f96D4c65ccca48` | [View on Etherscan](https://sepolia.etherscan.io/address/0x036150039c33b1645080a9c913f96D4c65ccca48#code) |
-| TokenVesting | `0x81F71D5D73383750C9d4BCe65C493A55BA887ecB` | [View on Etherscan](https://sepolia.etherscan.io/address/0x81F71D5D73383750C9d4BCe65C493A55BA887ecB#code) |
+| TokenCrowdsale | `pending` | pending |
 
-Deployed: 2026-03-26
+Deployed: pending
+
+
+## EXAMPLE SALE CONFIGURATION
+
+Token Name: Sample Token
+Token Symbol: STK
+Rate: 1000 STK per ETH
+Hard Cap: 10 ETH
+Soft Cap: 5 ETH
+Min Contribution: 0.1 ETH
+Max Contribution: 2 ETH
+Sale Duration: 7 days
+Cliff Period: 30 days
+Vesting Duration: 180 days
+
+Example token distribution:
+
+Crowdsale contract:  10,000 tokens  ← maximum sale allocation at hard cap
+Deployer keeps:      90,000 tokens  ← treasury, team vesting, and operations
+
+
+## DESIGN DECISIONS
+
+PURCHASER VESTING FROM PURCHASE DATE
+
+Each buyer's vesting clock starts at their individual purchase timestamp rather than
+a fixed sale start date. This staggers token unlocks across all buyers, reducing
+concentrated sell pressure at any single point in time and creating fairer distribution
+for both early and late participants.
+
+MANDATORY CLIFF PERIOD
+
+Every deployment requires a cliff duration greater than zero. There is no way to deploy
+without a cliff period by design. This prevents purchased tokens from being dumped
+immediately after the sale ends and protects the token price at launch.
+
+SOFT CAP REFUND PROTECTION
+
+If the soft cap is not reached buyers can always reclaim their full ETH contribution.
+The contract holds all ETH until finalization and only releases it to the admin if
+the raise was successful. This protects buyers from contributing to a failed raise.
+
+SINGLE ETH TRANSACTION PURCHASES
+
+Buyers send ETH in a single transaction with no prior approval required. This is
+simpler and safer than ERC-20 based payment which requires two transactions.
 
 
 ## SECURITY PRACTICES
 
 The contract uses well-established patterns from OpenZeppelin including:
 
-ReentrancyGuard on all token release functions
-SafeERC20 for safe token transfers
 Role-based permissions
-Fair beneficiary protection on revocation
+Emergency pause mechanism
+ReentrancyGuard on all purchase, claim, and refund functions
+SafeERC20 for safe token transfers
+Merkle proof verification for whitelist eligibility
+ETH transfer using call pattern for safe refund distribution
+Protected admin role renunciation
 Audited contract libraries
 
 These are common practices used in production smart contracts.
@@ -259,26 +405,27 @@ These are common practices used in production smart contracts.
 
 ## EXAMPLE USE CASES
 
-This vesting architecture can support many types of projects:
+This crowdsale contract can support many types of projects:
 
-Employee token compensation
-Investor token lockups
-Founder vesting schedules
-Advisor token grants
-DAO contributor rewards
+Public or private token sale fundraising
+Whitelist-gated presales for early supporters
+Community token launches with fair contribution limits
+DAO treasury funding rounds
+DeFi protocol token distributions with built-in vesting
+Game economy token launches
 
 
 ## FUTURE ENHANCEMENTS
 
-This project serves as the second layer in a larger Web3 infrastructure package.
+This project serves as the fifth layer in a larger Web3 infrastructure package.
 
 Possible upgrades include:
 
-Airdrop contract integration
-Staking rewards
-Governance (DAO voting)
-Treasury management
+Governance DAO voting contract
+Treasury management contract
 Upgradeable proxy contracts
+USDC or stablecoin payment support
+Tiered contribution levels with different rates
 
 
 ## AUTHOR
