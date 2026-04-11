@@ -336,9 +336,9 @@ Output the deployed contract address
 | Contract | Address | Etherscan |
 |----------|---------|-----------|
 | SampleToken | `0x036150039c33b1645080a9c913f96D4c65ccca48` | [View on Etherscan](https://sepolia.etherscan.io/address/0x036150039c33b1645080a9c913f96D4c65ccca48#code) |
-| TokenCrowdsale | `pending` | pending |
+| TokenCrowdsale | `0xb19f657E2CB2ea593a348285230D3827c85Ae3c5` | [View on Etherscan](https://sepolia.etherscan.io/address/0xb19f657E2CB2ea593a348285230D3827c85Ae3c5#code) |
 
-Deployed: pending
+Deployed: 2026-04-11
 
 
 ## EXAMPLE SALE CONFIGURATION

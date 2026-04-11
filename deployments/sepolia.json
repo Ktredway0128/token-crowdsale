@@ -1,10 +1,8 @@
 {
-  "network": "sepolia",
-  "chainId": 11155111,
   "SampleToken": {
-    "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-    "etherscan": "https://sepolia.etherscan.io/address/0x036150039c33b1645080a9c913f96D4c65ccca48#code",
-    "deployedAt": "2026-03-19"
+    "address": "0x036150039c33b1645080a9c913f96D4c65ccca48"
+  },
+  "TokenCrowdsale": {
+    "address": "0xb19f657E2CB2ea593a348285230D3827c85Ae3c5"
   }
-    
 }
