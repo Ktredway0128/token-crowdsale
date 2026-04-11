@@ -1,4 +1,4 @@
-# ERC-20 TOKEN CROWDSALE CONTRACT
+# TOKEN CROWDSALE CONTRACT
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.19-blue)
@@ -246,9 +246,9 @@ refundClaimed      – Whether a wallet has claimed their refund
 
 ### CLONE THE REPOSITORY:
 
-git clone https://github.com/Ktredway0128/erc20-token-crowdsale
+git clone https://github.com/Ktredway0128/token-crowdsale
 
-cd erc20-token-crowdsale
+cd token-crowdsale
 
 ### INSTALL DEPENDENCIES:
 
