@@ -6,17 +6,15 @@ const path = require("path");
 // ===== WHITELIST =====
 // For local Hardhat testing — replace with real addresses for Sepolia
 const WHITELISTED_ADDRESSES = [
-    "0xB6266E4Fd8e161A702c3c87fDC67C418bF941D90",
-    "0xad08767a27bdbfE65d1D84F2ea79fa62A3009E9F",
-    "0xAdb85ce9ed1Ef9eB649D308Fc334c038e0CACE9E",
+    "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC",
 ];
 
 async function main() {
 
     // ===== BUILD MERKLE TREE =====
-    const leaves = WHITELISTED_ADDRESSES.map(addr =>
-        keccak256(Buffer.from(addr.slice(2), "hex"))
-    );
+    const leaves = WHITELISTED_ADDRESSES.map(addr => keccak256(addr));
     const tree = new MerkleTree(leaves, keccak256, { sortPairs: true });
     const merkleRoot = tree.getHexRoot();
 
@@ -25,13 +23,13 @@ async function main() {
     // ===== GENERATE PROOFS =====
     const proofs = {};
     WHITELISTED_ADDRESSES.forEach(addr => {
-        const leaf = keccak256(Buffer.from(addr.slice(2), "hex"));
+        const leaf = keccak256(addr);
         const proof = tree.getHexProof(leaf);
         proofs[addr.toLowerCase()] = proof;
     });
 
     // ===== OUTPUT =====
-    const outputPath = path.join(__dirname, "../../Dashboards/erc20-crowdsale-dashboard/src/proofs.json");
+    const outputPath = path.join(__dirname, "../../Dashboards/token-crowdsale-dashboard/src/proofs-local.json");
     fs.writeFileSync(outputPath, JSON.stringify(proofs, null, 2));
 
     console.log("\nproofs.json written to src/proofs.json");
